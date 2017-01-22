@@ -23,8 +23,6 @@ import sys
 import base64
 
 from json import *
-from os import *
-from sys import *
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
