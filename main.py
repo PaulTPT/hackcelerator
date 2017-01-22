@@ -18,12 +18,7 @@ import json
 from sys import exit
 import urllib
 
-
-class MainPage(webapp2.RequestHandler):
-   
-    def get_text(self):
-
-
+def get_text(self):
 		baseURL ="http://hackaton.ypcloud.io/search"
 		body='''{ "search":[{
 		  	"searchType":"PROXIMITY",
@@ -71,10 +66,12 @@ class MainPage(webapp2.RequestHandler):
 		#urllib.urlretrieve(mapURL, "./tmp/map.png")
 		return text
 
-	def get(self):
-        self.response.headers['Content-Type'] = 'text/plain'
-        self.response.write(get_text())
 
+class MainPage(webapp2.RequestHandler):
+
+	def get(self):
+	    self.response.headers['Content-Type'] = 'text/plain'
+	    self.response.write(get_text())
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
