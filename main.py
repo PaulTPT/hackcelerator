@@ -65,15 +65,14 @@ def get_text():
 		mapURL="https://maps.googleapis.com/maps/api/staticmap?center=" + lat + "," + lon +"&size=600x300&maptype=roadmap&markers=color:red%7Clabel:D%7C" + store["centroid"] + "&markers=color:blue%7C" + lat + "," + lon + "&key=AIzaSyBCHGSrqCmae-8V5bqRbUpS3392HZjPd0g"
 
 		#urllib.urlretrieve(mapURL, "./tmp/map.png")
-		print text
+		return text
 
 
 class MainPage(webapp2.RequestHandler):
 
 	def get(self):
 	    self.response.headers['Content-Type'] = 'text/plain'
-	    get_text();
-	    self.response.write("hello")
+	    self.response.write(get_text())
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
