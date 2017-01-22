@@ -15,7 +15,6 @@
 import webapp2
 import requests
 import json
-from sys import exit
 import urllib
 
 def get_text(self):
@@ -44,7 +43,8 @@ def get_text(self):
 		    print "erreur..."
 		    exit(-1)
 
-		ypURL=urllib.quote("http://www.yellowpages.ca/search/si/1/" + buying + "/" + lat + "%252C" +lon)
+		#ypURL=urllib.quote("http://www.yellowpages.ca/search/si/1/" + buying + "/" + lat + "%252C" +lon)
+		ypURL="http://www.yellowpages.ca/search/si/1/" + buying + "/" + lat + "%252C" +lon
 		print ypURL
 
 		bitlyURL="https://api-ssl.bitly.com/v3/shorten?access_token=ae68a24213b3fd836c2894e5e201f6a8346bd6f6&longUrl="+ypURL
