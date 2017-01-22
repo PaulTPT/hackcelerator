@@ -39,13 +39,14 @@ def get_text():
 		request['what']=buying
 		request['where']["value"]=lat + "," + lon + ",2"
 		resp = requests.post(baseURL,headers=headers_r,data=json.dumps(data_r))
+		print "toto1"
 		if resp.status_code != 200:
 		    print "erreur..."
 		    #exit(-1)
 
 		#ypURL=urllib.quote("http://www.yellowpages.ca/search/si/1/" + buying + "/" + lat + "%252C" +lon)
 		ypURL="http://www.yellowpages.ca/search/si/1/" + buying + "/" + lat + "%252C" +lon
-		print ypURL
+		#print ypURL
 
 		bitlyURL="https://api-ssl.bitly.com/v3/shorten?access_token=ae68a24213b3fd836c2894e5e201f6a8346bd6f6&longUrl="+ypURL
 
@@ -64,14 +65,15 @@ def get_text():
 		mapURL="https://maps.googleapis.com/maps/api/staticmap?center=" + lat + "," + lon +"&size=600x300&maptype=roadmap&markers=color:red%7Clabel:D%7C" + store["centroid"] + "&markers=color:blue%7C" + lat + "," + lon + "&key=AIzaSyBCHGSrqCmae-8V5bqRbUpS3392HZjPd0g"
 
 		#urllib.urlretrieve(mapURL, "./tmp/map.png")
-		return text
+		print text
 
 
 class MainPage(webapp2.RequestHandler):
 
 	def get(self):
 	    self.response.headers['Content-Type'] = 'text/plain'
-	    self.response.write(get_text())
+	    get_text();
+	    self.response.write("hello")
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
