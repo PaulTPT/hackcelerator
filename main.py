@@ -15,9 +15,9 @@
 import webapp2
 import requests
 import json
-import urllib
+#import urllib
 
-def get_text(self):
+def get_text():
 		baseURL ="http://hackaton.ypcloud.io/search"
 		body='''{ "search":[{
 		  	"searchType":"PROXIMITY",
@@ -41,7 +41,7 @@ def get_text(self):
 		resp = requests.post(baseURL,headers=headers_r,data=json.dumps(data_r))
 		if resp.status_code != 200:
 		    print "erreur..."
-		    exit(-1)
+		    #exit(-1)
 
 		#ypURL=urllib.quote("http://www.yellowpages.ca/search/si/1/" + buying + "/" + lat + "%252C" +lon)
 		ypURL="http://www.yellowpages.ca/search/si/1/" + buying + "/" + lat + "%252C" +lon
@@ -52,7 +52,7 @@ def get_text(self):
 		resp2 = requests.get(bitlyURL)
 		if resp2.status_code != 200:
 		    print "erreur..."
-		    exit(-1)
+		    #exit(-1)
 
 		shortURL=resp2.json()["data"]["url"]
 		print resp2.json()["data"]
