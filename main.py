@@ -18,7 +18,6 @@ import json
 from google.appengine.api import urlfetch
 # Simple program that demonstrates how to invoke Azure ML Text Analytics API: key phrases, language and sentiment detection.
 import urllib2
-import urllib
 import sys
 import base64
 
