@@ -55,10 +55,10 @@ def get_text():
 		    print "erreur..."
 		    #exit(-1)
 
-		shortURL=json.loads(resp2.getContent())["data"]["url"]
-		print resp2.json()["data"]
+		shortURL=resp2.json["data"]["url"]
+		print resp2.json["data"]
 
-		store= json.loads(resp.getContent())["searchResult"][0]["merchants"][0]
+		store= resp.json()["searchResult"][0]["merchants"][0]
 		text= "Hey @" + name + ", you can buy " + buying + " at " + store["businessName"] + " ! List of more stores near you available here : " +shortURL
 		#print "Once you have found what you were looking for, ask us for the best price online !"
 
