@@ -12,19 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import webapp2
 import json
-#import urllib
-from google.appengine.api import urlfetch
-# Simple program that demonstrates how to invoke Azure ML Text Analytics API: key phrases, language and sentiment detection.
+#import urlfetch
 import urllib2
 import sys
 import base64
+import requests
+import urllib
 
 from json import *
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
+import tweepy
 
 
 
@@ -39,78 +39,20 @@ input_texts = '{"documents":[{"id":"1","text":"Je veux acheter des chaussures !"
 
 num_detect_langs = 1;
 
-class MyStreamListener(StreamListener):
+consumer_key = "jeVGNJtVVG3RCSLy3oJ8zzFzq"
+consumer_secret = "MKowNKLVV8DQ25oS86Zp23khil7lKQVB9Vr1oXhovCCElyl7iS"
 
-	def on_data(self, data):
-		
-		
-		"""
-		text_file = open("Output1.txt", "w", "utf-8")
-
-		text_obj = json.loads(data)['text']
-
-		for tweet in text_obj :
-			text_file.write(tweet)
-		
-		text_file.close()
-		"""
-		#json.loads(data)['text']
-		
-		if (json.loads(data)['place'] is not None):
-			#print('Tweet : ' + json.loads(data)['text']+'\n')
-			print('Localisation : ' + json.loads(data)['place']['full_name']+'\n')
-			# Detect key phrases.
-			input_texts = '{"documents":[{"id":"1","text":'+'"'+json.loads(data)['text']+'"'+'}]}'
-			print(input_texts, 'utf-8')
-			batch_keyphrase_url = base_url + 'text/analytics/v2.0/keyPhrases'
-			req = urllib2.Request(batch_keyphrase_url, input_texts, headers)
-			response = urllib2.urlopen(req)
-			result = response.read()
-			obj = json.loads(result)
-			#for keyphrase_analysis in obj['documents']:
-    				#print('Key phrases ' + str(keyphrase_analysis['id']) + ': ' + ', '.join(map(str,keyphrase_analysis['keyPhrases'])))
-    		#rint get_text(obj['documents'][0]['keyPhrases'][0])
-		else:
-			print("geo was null \n")
-			print(json.loads(data)['text'])
-			print('\n')
-		
-		
-			#print('Tweet : ' + json.loads(data)['text']+'\n')
-			#print('Localisation : ' + json.loads(data)['place']['full_name']+'\n')
-			#print('id_string : ' + json.loads(data)['id_str']+'\n')
-			return True
-			print('stuff\n')
-
-	def on_error(self, status):
-		print(status)
-
-
-
-consumer_key = "CwfkD6R86RcrJjZhaigoPXPK5"
-consumer_secret = "cbE57JlP2ssDFXLoMU4SrLBSd36HvgJwTWYkX7S0NYuFLo1afb"
-
-access_token = "822874752939425792-mEmXAY7dSuNelIMjWD70VE41d2wKNZs"
-access_token_secret = "58cFhLtTVJLIqt8CeWLNJy2OigVNFjAyXCPZhibbwTQC2"
-
-
-
-def trackHashtag(hashtag):
-	hashtag = '#'+ hashtag
-	myStreamListener = MyStreamListener()
+access_token = "823018043982888962-7cK1fjbYJQYdPuhVtarO1CRa4i4nEIG"
+access_token_secret = "MG4c5VZfBHdkG1dyYTYh7ZptZn4T7xiPs3f2vmtarJjTa"
+def sendTweet (tweet):
 	auth = OAuthHandler(consumer_key, consumer_secret)
 	auth.set_access_token(access_token, access_token_secret)
-	
-	myStream = Stream(auth, myStreamListener)
-	
-	#for location add paramenter locations=[-6.38,49.87,1.77,55.81]) or locations=GEOBOX_GERMANY for example
-	myStream.filter(track=[hashtag], languages =['en'], async=False)
+	api = tweepy.API(auth)
+	status = api.update_status(status=tweet)
 
 
 
-
-
-def get_text(buying):
+def get_text(buying, name,lat,lon):
 		baseURL ="http://hackaton.ypcloud.io/search"
 		body='''{ "search":[{
 		  	"searchType":"PROXIMITY",
@@ -124,63 +66,94 @@ def get_text(buying):
 		headers_r = {'content-type': 'application/json'}
 		request=data_r['search'][0]
 
-		#buying="shoes"
-		name="Paul"
-		lat="45.4754418"
-		lon="-73.5863705"
-
 		request['what']=buying
 		request['where']["value"]=lat + "," + lon + ",2"
-		resp = urlfetch.fetch(method=urlfetch.POST,url=baseURL,headers=headers_r,payload=json.dumps(data_r))
-		print "toto1"
-		if resp.status_code != 200:
-		    print "erreur..."
-		    #exit(-1)
 
-		#ypURL=urllib.quote("http://www.yellowpages.ca/search/si/1/" + buying + "/" + lat + "%252C" +lon)
-		ypURL="http://www.yellowpages.ca/search/si/1/" + buying + "/" + lat + "%252C" +lon
-		#print ypURL
-
-		bitlyURL="https://api-ssl.bitly.com/v3/shorten?access_token=ae68a24213b3fd836c2894e5e201f6a8346bd6f6&longUrl="+ypURL
-
-		resp2 = urlfetch.fetch(bitlyURL)
-		if resp2.status_code != 200:
-		    print "erreur..."
-		    #exit(-1)
-
-		shortURL=json.loads(resp2.content)["data"]["url"]
-		#print resp2.json()["data"]
-
-		store= json.loads(resp.content)["searchResult"][0]["merchants"][0]
-		text= "Hey @" + name + ", you can buy " + buying + " at " + store["businessName"] + " ! List of more stores near you available here : " +shortURL
-		#print "Once you have found what you were looking for, ask us for the best price online !"
-		
 		bitlyURL="https://api-ssl.bitly.com/v3/shorten?access_token=ae68a24213b3fd836c2894e5e201f6a8346bd6f6&longUrl=https://tweetfinder-yaas-static-host.cfapps.io"
 
-		resp3 = urlfetch.fetch(bitlyURL)
+		resp3 = requests.get(bitlyURL)
 		if resp3.status_code != 200:
 		    print "erreur..."
 		    #exit(-1)
 
-		shortURL_store=json.loads(resp3.content)["data"]["url"]
+		shortURL_store=resp3.json()["data"]["url"]
 
-		text2="Btw, a  little tip @" + name +". You can found the best prices for " + buying + " online here : " + shortURL_store + " ;)"
-		mapURL="https://maps.googleapis.com/maps/api/staticmap?center=" + lat + "," + lon +"&size=600x300&maptype=roadmap&markers=color:red%7Clabel:D%7C" + store["centroid"] + "&markers=color:blue%7C" + lat + "," + lon + "&key=AIzaSyBCHGSrqCmae-8V5bqRbUpS3392HZjPd0g"
+		try:
+			resp = requests.post(baseURL,headers=headers_r,data=json.dumps(data_r))
+			if resp.status_code != 200:
+			    print "erreur..."
+			    #exit(-1)
+
+			#ypURL=urllib.quote("http://www.yellowpages.ca/search/si/1/" + buying + "/" + lat + "%252C" +lon)
+			ypURL=urllib.quote("http://www.yellowpages.ca/search/si/1/" + buying + "/" + lat + "%252C" +lon,safe='')
+			#print ypURL
+
+			bitlyURL="https://api-ssl.bitly.com/v3/shorten?access_token=ae68a24213b3fd836c2894e5e201f6a8346bd6f6&longUrl="+ypURL
+
+			resp2 = requests.get(bitlyURL)
+			if resp2.status_code != 200:
+			    print "erreur..."
+			    #exit(-1)
+
+			shortURL=resp2.json()["data"]["url"]
+			#print resp2.json()["data"]
+
+			store= resp.json()["searchResult"][0]["merchants"][0]
+			text= "Hey @" + name + ", you can buy " + buying + " at " + store["businessName"] + " ! List of more stores near you available here : " +shortURL
+			#print "Once you have found what you were looking for, ask us for the best price online !"
+
+			text2="Btw, a little tip @" + name +". You can find the best prices for " + buying + " online here : " + shortURL_store + " ;)"
+			mapURL="https://maps.googleapis.com/maps/api/staticmap?center=" + lat + "," + lon +"&size=600x300&maptype=roadmap&markers=color:red%7Clabel:D%7C" + store["centroid"] + "&markers=color:blue%7C" + lat + "," + lon + "&key=AIzaSyBCHGSrqCmae-8V5bqRbUpS3392HZjPd0g"
 
 		#urllib.urlretrieve(mapURL, "./tmp/map.png")
-		return text
+			sendTweet(text)
+			sendTweet(text2)
+			print text
+
+		except :
+			text="Sorry @" + name +", I didn' t understand your request. But you can find the best prices for anything here : " + shortURL_store + " ;)"
+			try:
+				sendTweet(text)
+				print text
+			except:
+				print "error"
+
+
+
+class MyStreamListener(StreamListener):
+
+	def on_data(self, data):
+		input_texts = '{"documents":[{"id":"1","text":'+'"'+json.loads(data)['text']+'"'+'}]}'
+		#print(input_texts, 'utf-8')
+		batch_keyphrase_url = base_url + 'text/analytics/v2.0/keyPhrases'
+		req = urllib2.Request(batch_keyphrase_url, input_texts, headers)
+		response = urllib2.urlopen(req)
+		result = response.read()
+		obj = json.loads(result)
+		data_js=json.loads(data)
+		buy_obj=obj['documents'][0]['keyPhrases'][0]
+		name=data_js['user']['screen_name']
+		try:
+			lat=["place"]["bounding_box"]["coordinates"][0][0][0]
+			lon=["place"]["bounding_box"]["coordinates"][0][0][1]
+		except:
+			lat="45.4754418"
+			lon="-73.5863705"
+
+		get_text(buy_obj,name,lat,lon)
+
+	def on_error(self, status):
+		print(status)
+
+def trackHashtag(hashtag):
+	hashtag = '#'+ hashtag
+	myStreamListener = MyStreamListener()
+	auth = OAuthHandler(consumer_key, consumer_secret)
+	auth.set_access_token(access_token, access_token_secret)
+	
+	myStream = Stream(auth, myStreamListener)
+	
+	#for location add paramenter locations=[-6.38,49.87,1.77,55.81]) or locations=GEOBOX_GERMANY for example
+	myStream.filter(track=[hashtag], languages =['en'], async=False)
 
 trackHashtag('askYP')
-
-
-class MainPage(webapp2.RequestHandler):
-
-	def get(self):
-	    self.response.headers['Content-Type'] = 'text/plain'
-	    self.response.write("starting server")
-	    trackHashtag('askYP')
-	    
-
-app = webapp2.WSGIApplication([
-    ('/start', MainPage),
-], debug=True)
