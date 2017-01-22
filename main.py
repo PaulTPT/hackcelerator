@@ -13,9 +13,9 @@
 # limitations under the License.
 
 import webapp2
-import requests
-import json
+#import json
 #import urllib
+from google.appengine.api import urlfetch
 
 def get_text():
 		baseURL ="http://hackaton.ypcloud.io/search"
@@ -38,7 +38,7 @@ def get_text():
 
 		request['what']=buying
 		request['where']["value"]=lat + "," + lon + ",2"
-		resp = requests.post(baseURL,headers=headers_r,data=json.dumps(data_r))
+		resp = urlfetch.fetch(method=urlfetch.POST,url=baseURL,headers=headers_r,payload=json.dumps(data_r))
 		print "toto1"
 		if resp.status_code != 200:
 		    print "erreur..."
@@ -50,7 +50,7 @@ def get_text():
 
 		bitlyURL="https://api-ssl.bitly.com/v3/shorten?access_token=ae68a24213b3fd836c2894e5e201f6a8346bd6f6&longUrl="+ypURL
 
-		resp2 = requests.get(bitlyURL)
+		resp2 = urlfetch.fetch(bitlyURL)
 		if resp2.status_code != 200:
 		    print "erreur..."
 		    #exit(-1)
